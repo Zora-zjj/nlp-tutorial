@@ -17,7 +17,7 @@ dtype = torch.FloatTensor
 
 “”“”“”处理输入数据“”“”“”
 # sentences = ['ich mochte ein bier P', 'S i want a beer', 'i want a beer E']
-
+               德语：我喜欢啤酒
 # # Transformer Parameters
 # # Padding Should be Zero
 # src_vocab = {'P' : 0, 'ich' : 1, 'mochte' : 2, 'ein' : 3, 'bier' : 4}
