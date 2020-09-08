@@ -18,27 +18,28 @@ filter_sizes = [2, 2, 2] # n-gram window
 num_filters = 3
 
 # 3 words sentences (=sequence_length is 3)
-sentences = ["i love you", "he loves me", "she likes baseball", "i hate you", "sorry for that", "this is awful"]
-labels = [1, 1, 1, 0, 0, 0]  # 1 is good, 0 is not good.
+"""下面是处理输入数据，去掉#"""
+# sentences = ["i love you", "he loves me", "she likes baseball", "i hate you", "sorry for that", "this is awful"]
+# labels = [1, 1, 1, 0, 0, 0]  # 1 is good, 0 is not good.
 
-word_list = " ".join(sentences).split()
-word_list = list(set(word_list))
-word_dict = {w: i for i, w in enumerate(word_list)}
-vocab_size = len(word_dict)
+# word_list = " ".join(sentences).split()
+# word_list = list(set(word_list))
+# word_dict = {w: i for i, w in enumerate(word_list)}
+# vocab_size = len(word_dict)
 
-inputs = []
-for sen in sentences:
-    inputs.append(np.asarray([word_dict[n] for n in sen.split()]))
+# inputs = []
+# for sen in sentences:
+#     inputs.append(np.asarray([word_dict[n] for n in sen.split()]))
 
-targets = []
-for out in labels:
-    targets.append(out) # To using Torch Softmax Loss function
+# targets = []
+# for out in labels:
+#     targets.append(out) # To using Torch Softmax Loss function
 
-input_batch = Variable(torch.LongTensor(inputs))
-target_batch = Variable(torch.LongTensor(targets))
+input_batch = Variable(torch.LongTensor(inputs))        #   tensor([    [ 1, 15,  5],[ 8,  0, 14],,,   ])    # [6,3]
+target_batch = Variable(torch.LongTensor(targets))      #   tensor([1, 1, 1, 0, 0, 0])
 
 
-class TextCNN(nn.Module):
+class TextCNN(nn.Module):     
     def __init__(self):
         super(TextCNN, self).__init__()
 
@@ -49,7 +50,7 @@ class TextCNN(nn.Module):
         self.filter_list = nn.ModuleList(
             [nn.Conv2d(1, num_filters, (size, embedding_size), bias=True) for size in filter_sizes])
 
-    def forward(self, X):
+    def forward(self, X):          # 训练时： output = TextCNN (input_batch)
         embedded_chars = self.W[X] # [batch_size, sequence_length, embedding_size]
         embedded_chars = embedded_chars.unsqueeze(1) # add channel(=1) [batch, channel(=1), sequence_length, embedding_size]
 
