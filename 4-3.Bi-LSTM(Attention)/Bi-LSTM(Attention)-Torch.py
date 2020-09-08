@@ -18,24 +18,25 @@ n_hidden = 5 # number of hidden units in one cell
 num_classes = 2  # 0 or 1
 
 # 3 words sentences (=sequence_length is 3)
-sentences = ["i love you", "he loves me", "she likes baseball", "i hate you", "sorry for that", "this is awful"]
-labels = [1, 1, 1, 0, 0, 0]  # 1 is good, 0 is not good.
+"""下面是处理输入数据"""
+# sentences = ["i love you", "he loves me", "she likes baseball", "i hate you", "sorry for that", "this is awful"]
+# labels = [1, 1, 1, 0, 0, 0]  # 1 is good, 0 is not good.
 
-word_list = " ".join(sentences).split()
-word_list = list(set(word_list))
-word_dict = {w: i for i, w in enumerate(word_list)}
-vocab_size = len(word_dict)
+# word_list = " ".join(sentences).split()
+# word_list = list(set(word_list))
+# word_dict = {w: i for i, w in enumerate(word_list)}
+# vocab_size = len(word_dict)
 
-inputs = []
-for sen in sentences:
-    inputs.append(np.asarray([word_dict[n] for n in sen.split()]))
+# inputs = []
+# for sen in sentences:
+#     inputs.append(np.asarray([word_dict[n] for n in sen.split()]))
 
-targets = []
-for out in labels:
-    targets.append(out) # To using Torch Softmax Loss function
+# targets = []
+# for out in labels:
+#     targets.append(out) # To using Torch Softmax Loss function
 
-input_batch = Variable(torch.LongTensor(inputs))
-target_batch = Variable(torch.LongTensor(targets))
+input_batch = Variable(torch.LongTensor(inputs))         # 维度[6,3] ,数据是索引表示单词
+target_batch = Variable(torch.LongTensor(targets))       # tensor([1, 1, 1, 0, 0, 0])
 
 class BiLSTM_Attention(nn.Module):
     def __init__(self):
@@ -54,7 +55,7 @@ class BiLSTM_Attention(nn.Module):
         context = torch.bmm(lstm_output.transpose(1, 2), soft_attn_weights.unsqueeze(2)).squeeze(2)
         return context, soft_attn_weights.data.numpy() # context : [batch_size, n_hidden * num_directions(=2)]
 
-    def forward(self, X):
+    def forward(self, X):       # output, attention = model(input_batch)
         input = self.embedding(X) # input : [batch_size, len_seq, embedding_dim]
         input = input.permute(1, 0, 2) # input : [len_seq, batch_size, embedding_dim]
 
